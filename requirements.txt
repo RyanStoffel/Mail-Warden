@@ -1,0 +1,15 @@
+click==8.1.8
+imaplib2==3.6
+joblib==1.4.2
+nltk==3.9.1
+numpy==2.2.3
+pycryptodome==3.21.0
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.16
+PyQt5_sip==12.17.0
+python-magic==0.4.27
+regex==2024.11.6
+scikit-learn==1.6.1
+scipy==1.15.2
+threadpoolctl==3.5.0
+tqdm==4.67.1
