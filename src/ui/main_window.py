@@ -154,3 +154,49 @@ class MainWindow(QMainWindow):
                 "Failed to connect to email server. Please check your credentials.",
             )
             self.email_processor = None
+
+    def refresh_emails(self):
+        if not self.email_processor:
+            QMessageBox.warning(
+                self, "Not Connected", "Please connect to an email server first."
+            )
+            return
+
+        self.email_list.clear()
+        self.current_emails = []
+
+        self.statusBar().showMessage("Fetching Emails...")
+
+        emails = self.email_processor.get_inbox_messages(limit=20)
+        self.current_emails = emails
+
+        for email in emails:
+            item = QListWidgetItem()
+            item.setText(f"{self.email['subject']}")
+            item.setData(Qt.UserRole, emails.index(email))
+            self.email_list.addItem(item)
+
+        self.statusBar.showMessage(f"Loaded {len(emails)} emails")
+
+    def on_email_selected(self, current, previus):
+        if not current:
+            return
+
+        index = current.data(Qt.UserRole)
+        email = self.current_emails[index]
+
+        self.subject_label.setText(f"Subject: {email['subject']}")
+        self.from_label.setText(f"From: {email['from']}")
+        self.date_label.setText(f"Date: {email['date']}")
+
+        if email["attachments"]:
+            self.attachment_indicator.setText(
+                f"Attachments: {len(email['attachments'])}"
+            )
+        else:
+            self.attachment_indicator.setText("Attachments: None")
+
+        self.email_content.setPlainText(email["body"])
+
+        self.phishing_indicator.setText("Phishing: Not Checked")
+        self.encryption_indicator.setText("Encryption: None")
