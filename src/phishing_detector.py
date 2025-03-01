@@ -57,9 +57,8 @@ class PhishingDetector:
         if suspicious_links:
             risk_factors.append(("suspicious_links", 0.4, suspicious_links))
 
-        sender_analysis = self._analyze_sender(
-            email_data["subject"], email_data["body"]
-        )
+        # Fixed: Now only passing the "from" field to _analyze_sender()
+        sender_analysis = self._analyze_sender(email_data["from"])
         if sender_analysis["suspicious"]:
             risk_factors.append(("suspicious_sender", 0.3, sender_analysis["reasons"]))
 
