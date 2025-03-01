@@ -1,7 +1,6 @@
 import os
 import sys
-
-from PyQt5.QtWidgets import QApplication
+from tkinter import Tk
 
 # Make sure we can import our own modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,13 +13,18 @@ from src.ui.main_window import MainWindow
 
 
 def main():
-    app = QApplication(sys.argv)
-    app.setApplicationName("EmailGuardian")
+    # Initialize Tkinter and our application
+    root = Tk()
+    root.title("Mail-Warden")
 
-    window = MainWindow()
-    window.show()
+    # Apply light theme
+    root.configure(bg="#f0f0f0")
 
-    sys.exit(app.exec_())
+    # Create the application instance
+    app = MainWindow(root)
+
+    # Start the Tkinter event loop
+    root.mainloop()
 
 
 if __name__ == "__main__":
