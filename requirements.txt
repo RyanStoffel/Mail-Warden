@@ -1,8 +1,11 @@
+cffi==1.17.1
 click==8.1.8
+cryptography==44.0.1
 imaplib2==3.6
 joblib==1.4.2
 nltk==3.9.1
 numpy==2.2.3
+pycparser==2.22
 pycryptodome==3.21.0
 PyQt5==5.15.11
 PyQt5-Qt5==5.15.16
