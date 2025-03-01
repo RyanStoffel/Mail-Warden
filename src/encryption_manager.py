@@ -1,4 +1,3 @@
-# src/encryption_manager.py
 import base64
 import json
 import os
@@ -11,6 +10,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 class EncryptionManager:
@@ -223,7 +223,7 @@ class EncryptionManager:
 
         password_bytes = password.encode("utf-8")
         salt = os.urandom(16)
-        kdf = hashes.PBKDF2HMAC(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
