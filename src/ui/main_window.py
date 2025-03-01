@@ -1,3 +1,4 @@
+import os
 import sys
 
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
@@ -87,7 +88,7 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout(central_widget)
 
-        splitter = QSplitter(Qt.horizontal)
+        splitter = QSplitter(Qt.Horizontal)
 
         list_panel = QWidget()
         list_layout = QVBoxLayout(list_panel)
@@ -99,30 +100,37 @@ class MainWindow(QMainWindow):
         list_layout.addWidget(QLabel("Inbox"))
         list_layout.addWidget(self.email_list)
 
+        # Create email content panel
         content_panel = QWidget()
         content_layout = QVBoxLayout(content_panel)
 
-        self.subject_label = QHBoxLayout()
+        # Email headers
+        self.subject_label = QLabel()  # Create as QLabel
         self.subject_label.setFont(QFont("Arial", 12, QFont.Bold))
         self.from_label = QLabel()
         self.date_label = QLabel()
 
-        security_layout = QHBoxLayout()
+        # Security indicators
+        security_layout = QHBoxLayout()  # Create a layout
+        # Create indicator labels
         self.phishing_indicator = QLabel("Phishing: Not Checked")
         self.attachment_indicator = QLabel("Attachments: None")
         self.encryption_indicator = QLabel("Encryption: None")
 
+        # Add indicators to the security layout
         security_layout.addWidget(self.phishing_indicator)
         security_layout.addWidget(self.attachment_indicator)
         security_layout.addWidget(self.encryption_indicator)
 
+        # Email body
         self.email_content = QTextEdit()
         self.email_content.setReadOnly(True)
 
+        # Add all widgets to content layout
         content_layout.addWidget(self.subject_label)
         content_layout.addWidget(self.from_label)
         content_layout.addWidget(self.date_label)
-        content_layout.addLayout(security_layout)
+        content_layout.addLayout(security_layout)  # Add the layout, not reassign
         content_layout.addWidget(self.email_content)
 
         splitter.addWidget(list_panel)
@@ -140,13 +148,23 @@ class MainWindow(QMainWindow):
             email, password, server = dialog.get_credentials()
             self.connect_to_email(email, password, server)
 
-    def connect_to_email(self):
+    def connect_to_email(self, email, password, server):
+        import os
+        import sys
+
+        # Ensure the parent directory is in sys.path
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        parent_dir = os.path.dirname(current_dir)
+        if parent_dir not in sys.path:
+            sys.path.append(parent_dir)
+
+        # Now import the EmailProcessor
         from src.email_processor import EmailProcessor
 
-        self.email_processor = EmailProcessor(self.email, self.password, self.server)
+        self.email_processor = EmailProcessor(email, password, server)
         if self.email_processor.connect():
-            self.statusBar().showMessage(f"Connected to {self.email}")
-            self.refresh_emails
+            self.statusBar().showMessage(f"Connected to {email}")
+            self.refresh_emails()
         else:
             QMessageBox.critical(
                 self,
@@ -172,11 +190,11 @@ class MainWindow(QMainWindow):
 
         for email in emails:
             item = QListWidgetItem()
-            item.setText(f"{self.email['subject']}")
+            item.setText(f"{email['subject']}")
             item.setData(Qt.UserRole, emails.index(email))
             self.email_list.addItem(item)
 
-        self.statusBar.showMessage(f"Loaded {len(emails)} emails")
+        self.statusBar().showMessage(f"Loaded {len(emails)} emails")
 
     def on_email_selected(self, current, previus):
         if not current:
