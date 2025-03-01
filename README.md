@@ -1,6 +1,8 @@
 # Mail-Warden
+Made by: Ryan Stoffel
 
 A comprehensive email security tool with phishing detection, attachment scanning, and encrypted communications.
+This project was made for my OS & Networking class at California Baptist University.
 
 ## Features
 
@@ -41,12 +43,12 @@ A comprehensive email security tool with phishing detection, attachment scanning
 git clone https://github.com/yourusername/mail-warden.git
 cd mail-warden
 
-# Create a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+# Create a virtual environment
+python -m venv myenv
+source myenv/bin/activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies using the setup helper file
+python setup-helper.py
 
 # Run the application
 python run.py
@@ -55,7 +57,7 @@ python run.py
 ## Usage
 
 1. Launch the application using `python run.py`
-2. Log in to your email account
+2. Log in to your email account (For Gmail, you have to create an App-Specific Password)
 3. Browse your emails in the Mail-Warden interface
 4. Use the security features:
    - Click "Scan for Threats" to analyze the selected email for phishing attempts
@@ -66,9 +68,6 @@ python run.py
 
 ```
 mail-warden/
-├── data/                      # Data files for threat detection
-│   ├── malware_signatures.db
-│   └── phishing_patterns.json
 ├── src/                       # Source code
 │   ├── attachment_scanner.py  # Scans attachments for threats
 │   ├── email_processor.py     # Handles email retrieval
@@ -84,14 +83,17 @@ mail-warden/
 ├── README.md                  # Project documentation
 ├── requirements.txt           # Python dependencies
 ├── run.py                     # Application runner
-└── setup.py                   # Package configuration
+└── setup-helper.py            # Package configuration
+└── run-tests.sh               # A script that runs all tests
+
 ```
 
 ## Running Tests
 
 ```bash
 # Run all tests
-python -m unittest discover tests
+chmod +x run-tests.sh
+./run-tests.sh
 
 # Run specific test modules
 python -m unittest tests.test_attachment_scanner
