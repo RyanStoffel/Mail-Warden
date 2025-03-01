@@ -1,13 +1,10 @@
 import os
-
-# Make sure we can import our module
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.phishing_detector import PhishingDetector
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class TestPhishingDetector(unittest.TestCase):
@@ -15,7 +12,6 @@ class TestPhishingDetector(unittest.TestCase):
         self.detector = PhishingDetector()
 
     def test_safe_email(self):
-        """Test that a normal email is identified as safe"""
         email_data = {
             "subject": "Team meeting tomorrow",
             "from": "colleague@company.com",
@@ -29,7 +25,6 @@ class TestPhishingDetector(unittest.TestCase):
         self.assertEqual(len(result["reasons"]), 0)
 
     def test_suspicious_keywords(self):
-        """Test that emails with multiple suspicious keywords are flagged"""
         email_data = {
             "subject": "URGENT: Verify your account information immediately",
             "from": "security@bank-verify.com",
@@ -38,7 +33,6 @@ class TestPhishingDetector(unittest.TestCase):
             "security information. Failure to verify will result in your account being suspended.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,
@@ -68,7 +62,6 @@ class TestPhishingDetector(unittest.TestCase):
             self.detector.analyze_email = original_method
 
     def test_malicious_links(self):
-        """Test that emails with suspicious links are flagged"""
         email_data = {
             "subject": "Your package delivery",
             "from": "delivery@shipping.com",
@@ -76,7 +69,6 @@ class TestPhishingDetector(unittest.TestCase):
             "http://103.45.67.89/tracking/confirm.php or your package will be returned.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,
@@ -108,7 +100,6 @@ class TestPhishingDetector(unittest.TestCase):
             self.detector.analyze_email = original_method
 
     def test_lookalike_domain(self):
-        """Test that emails with lookalike domains are flagged"""
         email_data = {
             "subject": "Your Google account needs attention",
             "from": "security@g00gle.com",
@@ -116,7 +107,6 @@ class TestPhishingDetector(unittest.TestCase):
             "Please verify your identity at https://g00gle.com/verify.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,
@@ -146,14 +136,12 @@ class TestPhishingDetector(unittest.TestCase):
             self.detector.analyze_email = original_method
 
     def test_mismatched_sender(self):
-        """Test that emails with mismatched sender info are flagged"""
         email_data = {
             "subject": "PayPal: Action required",
             "from": "PayPal Security <security@payment-verify.net>",
             "body": "Dear valued customer, please verify your information.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,
@@ -183,7 +171,6 @@ class TestPhishingDetector(unittest.TestCase):
             self.detector.analyze_email = original_method
 
     def test_urgent_action_language(self):
-        """Test that emails with urgent action language are flagged"""
         email_data = {
             "subject": "IMMEDIATE ACTION REQUIRED",
             "from": "support@service.com",
@@ -191,7 +178,6 @@ class TestPhishingDetector(unittest.TestCase):
             "This is your final warning. Immediate action is required to prevent account suspension.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,
@@ -219,7 +205,6 @@ class TestPhishingDetector(unittest.TestCase):
             self.detector.analyze_email = original_method
 
     def test_sensitive_information_request(self):
-        """Test that emails requesting sensitive information are flagged"""
         email_data = {
             "subject": "Update your account details",
             "from": "admin@services.com",
@@ -227,7 +212,6 @@ class TestPhishingDetector(unittest.TestCase):
             "to verify your identity. We also need your account password to complete the process.",
         }
 
-        # Create a simple wrapper to return a controlled result
         def mock_analyze_email(data):
             return {
                 "is_suspicious": True,

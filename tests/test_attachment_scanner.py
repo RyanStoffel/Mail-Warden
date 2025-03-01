@@ -1,14 +1,12 @@
 import os
-
-# Make sure we can import our module
 import sys
 import tempfile
 import unittest
 from unittest.mock import MagicMock, patch
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from src.attachment_scanner import AttachmentScanner
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class TestAttachmentScanner(unittest.TestCase):
@@ -23,14 +21,12 @@ class TestAttachmentScanner(unittest.TestCase):
         os.rmdir(self.temp_dir)
 
     def create_test_file(self, name, content=b"test content"):
-        """Helper to create a test file with given name and content"""
         path = os.path.join(self.temp_dir, name)
         with open(path, "wb") as f:
             f.write(content)
         return path
 
     def test_safe_file(self):
-        """Test that a benign file is correctly identified as safe"""
         file_path = self.create_test_file("test.txt")
         result = self.scanner.scan_attachment(file_path, "test.txt")
 
@@ -39,7 +35,6 @@ class TestAttachmentScanner(unittest.TestCase):
         self.assertEqual(len(result["reasons"]), 0)
 
     def test_dangerous_extension(self):
-        """Test that files with dangerous extensions are flagged"""
         file_path = self.create_test_file("malware.exe")
         result = self.scanner.scan_attachment(file_path, "malware.exe")
 
@@ -53,7 +48,6 @@ class TestAttachmentScanner(unittest.TestCase):
         )
 
     def test_moderate_risk_extension(self):
-        """Test that files with moderate risk extensions are flagged appropriately"""
         file_path = self.create_test_file("document.doc")
         result = self.scanner.scan_attachment(file_path, "document.doc")
 
@@ -61,15 +55,12 @@ class TestAttachmentScanner(unittest.TestCase):
         self.assertGreater(result["risk_score"], 0.0)
         self.assertGreater(len(result["reasons"]), 0)
 
-        # Check if the reason mentions the risky extension
         self.assertTrue(
             any("risky extension" in reason.lower() for reason in result["reasons"])
         )
 
     @patch("magic.Magic")
     def test_file_type_mismatch(self, mock_magic):
-        """Test that files with mismatched extensions and types are flagged"""
-        # Setup the mock to return an executable mime type for a .txt file
         magic_instance = MagicMock()
         magic_instance.from_file.return_value = "application/x-dosexec"
         mock_magic.return_value = magic_instance
@@ -80,7 +71,6 @@ class TestAttachmentScanner(unittest.TestCase):
         self.assertNotEqual(result["risk_level"], "safe")
         self.assertGreater(result["risk_score"], 0.0)
 
-        # Check that the scanner detects the executable, which is what actually matters
         self.assertTrue(
             any(
                 "executable" in reason.lower()
@@ -91,12 +81,8 @@ class TestAttachmentScanner(unittest.TestCase):
         )
 
     def test_known_malware_hash(self):
-        """Test that files with known malware hashes are detected"""
-        # Create a file with content that will hash to a known value
-        # For testing purposes, we'll monkey patch the scanner's malware_hashes list
         original_hashes = self.scanner.malware_hashes
 
-        # Add our test file's hash to the malware list
         test_content = b"malicious content for testing"
         import hashlib
 
@@ -116,14 +102,11 @@ class TestAttachmentScanner(unittest.TestCase):
                 )
             )
         finally:
-            # Restore original hashes
             self.scanner.malware_hashes = original_hashes
 
     @patch("zipfile.is_zipfile")
     @patch("zipfile.ZipFile")
     def test_archive_with_dangerous_files(self, mock_zipfile, mock_is_zipfile):
-        """Test that archives containing dangerous files are flagged"""
-        # Setup mocks
         mock_is_zipfile.return_value = True
 
         mock_zip = MagicMock()

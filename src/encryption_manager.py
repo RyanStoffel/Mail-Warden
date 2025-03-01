@@ -256,7 +256,7 @@ class EncryptionManager:
         encrypted_message = base64.b64decode(data["encrypted_message"])
 
         password_bytes = password.encode("utf-8")
-        kdf = hashes.PBKDF2HMAC(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
